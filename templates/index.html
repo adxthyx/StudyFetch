@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Fetch:</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            background-image: url("left-design.png"), url("right-design.png");
+            background-position: left top, right top;
+            background-repeat: no-repeat;
+            background-size: 150px, 150px;
+            background-attachment: fixed, fixed;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+
+        #attendanceForm {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #attendanceForm label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        #attendanceForm input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #attendanceForm button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #attendanceForm button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+
+        #noteButton {
+            display: block;
+            max-width: 200px;
+            margin: 20px auto;
+            padding: 12px;
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        #noteButton:hover {
+            background-color: #0056b3;
+        }
+        #month {
+            width: 105%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #subjectDropdown {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            white-space: pre-line;
+            line-height: 1;
+            position: fixed;
+            top: 30px; /* Adjust the distance from the top as needed */
+            right: 30px;
+            }
+
+        #goButton {
+            display: block;
+            position: fixed;
+            top: 80px; /* Adjust the distance from the top as needed */
+            right: 140px; /* Adjust the distance from the right as needed */
+            max-width: 200px;
+            margin: 20px auto;
+            padding: 12px;
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            }
+
+
+
+        #goButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Study Fetch</h1>
+    <form id="attendanceForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+
+        <label for="date">Date:</label>
+        <input type="text" id="date" required>
+
+        <label for="month">Month:</label>
+        <select id="month" required>
+            <option value="" disabled selected>Select a month</option>
+            <option value="Jan">Jan</option>
+            <option value="Feb">Feb</option>
+            <option value="Mar">Mar</option>
+            <option value="Apr">Apr</option>
+            <option value="May">May</option>
+            <option value="Jun">Jun</option>
+            <option value="Jul">Jul</option>
+            <option value="Aug">Aug</option>
+            <option value="Sep">Sep</option>
+            <option value="Oct">Oct</option>
+            <option value="Nov">Nov</option>
+            <option value="Dec">Dec</option>
+        </select>
+
+        <label for="year">Year:</label>
+        <input type="text" id="year" required>
+
+        <button type="submit">Check Attendance</button>
+    </form>
+    <div id="result"></div>
+
+    <label for="subjectDropdown">:</label>
+    <select id="subjectDropdown">
+        <option value="" disabled selected>Pick the subject for notes</option>
+        <option value="Maths">Maths</option>
+        <option value="Constitution of India">Constitution of India</option>
+        <option value="Theory of computation">Theory of computation</option>
+        <option value="Design and analysis of algorithm">Design and analysis of algorithm</option>
+        <option value="Data Communication and Networking">Data Communication and Networking</option>
+        <option value="Machine Learning">Machine Learning</option>
+        <option value="AEC">AEC</option>
+    </select>
+    <button id="goButton">Go</button>
+
+    <script>
+        const form = document.getElementById('attendanceForm');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const date = document.getElementById('date').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+
+            const response = await fetch(`/get_attendance?username=${username}&date=${date}&month=${month}&year=${year}`);
+            const data = await response.json();
+
+            let formattedResult = data.result.replace(/\./g, '.<br>');
+
+            resultDiv.innerHTML = formattedResult;
+        });
+        const subjectDropdown = document.getElementById('subjectDropdown');
+        const goButton = document.getElementById('goButton');
+
+        goButton.addEventListener('click', () => {
+            const selectedSubject = subjectDropdown.value;
+            if (selectedSubject === 'CustomURL') {
+                const customURL = prompt('Enter your custom URL:');
+                if (customURL && customURL.trim() !== '') {
+                    window.open(customURL, '_blank');
+                }
+            }else {
+            
+                switch (selectedSubject) {
+                    case 'Maths':
+                        window.open('https://drive.google.com/drive/folders/13Q5eNZPT8y8uVHPT0TXlhlrITe9xPHzt?usp=sharing', '_blank');
+                        break;
+                    case 'Constitution of India':
+                        window.open('https://drive.google.com/drive/folders/13rNjMyrQJKK22pTr7dABAhVtnqH67pu_?usp=sharing', '_blank');
+                        break;
+                    case 'Theory of computation':
+                        window.open('https://drive.google.com/drive/folders/13bp2bfMfKEcuJaKvXhpdx_oXhrv8BYqn?usp=sharing', '_blank');
+                        break;
+                    case 'Design and analysis of algorithm':
+                        window.open('https://drive.google.com/drive/folders/13_KqLTvWta-18Ovw234jDlkGJp-LoUIi?usp=sharing', '_blank');
+                        break;
+                    case 'Data Communication and Networking':
+                        window.open('https://drive.google.com/drive/folders/13TQzKnkRvKw4hCEMhjk7mDFhCToDD4IV?usp=sharing', '_blank');
+                        break;
+                    case 'Machine Learning':
+                        window.open('https://drive.google.com/drive/folders/13d69mVc9KlV92cPj9VrdOSS6z6VT7v1D?usp=sharing', '_blank');
+                        break;
+                    case 'AEC':
+                    window.open('https://drive.google.com/drive/folders/1K2aoT0W9VHsw9C0UvyF5Ayo-vF0zBtH5?usp=sharing', '_blank');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
