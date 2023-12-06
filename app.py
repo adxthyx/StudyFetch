@@ -8,9 +8,9 @@ import re
 app = Flask(__name__)
 
 def retrieve_attendance_data(username, date, month, year):
-    url=r"https://parents.msrit.edu/parentseven/"
+    url=r"https://parents.msrit.edu/"
 
-    ser=Service(r"C:\Users\adith\OneDrive\Desktop\ABC\chromedriver_win32\chromedriver.exe")
+    ser=Service(r"C:\Users\adith\OneDrive\Desktop\ABC\chromedriver_win64\chromedriver.exe")
     driver = webdriver.Chrome(service=ser)
     driver.get(url)
 
